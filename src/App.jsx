@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-	const [orderId, setOrderId] = useState("1");
+	const [orderId, setOrderId] = useState("ztvbudtlh8");
+	const [token, setToken] = useState(import.meta.env.VITE_PAYY_TOKEN);
 	const [qr, setQR] = useState(null);
 	const [link, setLink] = useState(null);
 	const [button, setButton] = useState(null);
@@ -16,7 +17,7 @@ function App() {
 					method: "POST",
 					headers: {
 						Authorization:
-							"Bearer " + import.meta.env.VITE_PAYY_TOKEN,
+							"Bearer " + token,
 						"Content-Type": "application/json",
 						"Accept": "application/json",
 						"Access-Control-Allow-Origin": "*",
@@ -38,7 +39,7 @@ function App() {
 		const res = await fetch(import.meta.env.VITE_PAYY_URL + "/api/generate/qrcode", {
 			method: "POST",
 			headers: {
-				Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
+				Authorization: "Bearer " + token,
 				"Content-Type": "application/json",
 				"Accept": "application/json",
 				"Access-Control-Allow-Origin": "*",
@@ -48,11 +49,15 @@ function App() {
 			}),
 		});
 		const json = await res.json();
-		setQR(
-			"<img src='data:image/png;base64, " +
+		if(res.ok){
+			setQR(
+				"<img src='data:image/png;base64, " +
 				json.data +
 				"' alt='QR Code' />"
-		);
+			);
+		} else {
+			setQR("Error generating QR code");
+		}
 	};
 	const getLink = async () => {
 		const res = await fetch(
@@ -60,7 +65,7 @@ function App() {
 			{
 				method: "POST",
 				headers: {
-					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
+					Authorization: "Bearer " + token,
 					"Content-Type": "application/json",
 					"Accept": "application/json",
 					"Access-Control-Allow-Origin": "*",
@@ -71,7 +76,11 @@ function App() {
 			}
 		);
 		const json = await res.json();
-		setLink(json.data);
+		if(res.ok){
+			setLink(json.data);
+		} else {
+			setLink("Error generating link");
+		}
 	};
 	const getButton = async () => {
 		const res = await fetch(
@@ -79,7 +88,7 @@ function App() {
 			{
 				method: "POST",
 				headers: {
-					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
+					Authorization: "Bearer " + token,
 					"Content-Type": "application/json",
 					"Accept": "application/json",
 					"Access-Control-Allow-Origin": "*",
@@ -90,7 +99,11 @@ function App() {
 			}
 		);
 		const json = await res.json();
-		setButton(json.data);
+		if(res.ok){
+			setButton(json.data);
+		} else {
+			setButton("Error generating button");
+		}
 	};
 
 	const generateRandomOrderId = () => {
@@ -105,7 +118,7 @@ function App() {
 			{
 				method: "POST",
 				headers: {
-					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
+					Authorization: "Bearer " + token,
 					"Content-Type": "application/json",
 					"Accept": "application/json",
 					"Access-Control-Allow-Origin": "*",
@@ -129,7 +142,6 @@ function App() {
 				}),
 			}
 		);
-		const json = await res.json();
 		setOrderId(oid);
 		setOrderStatus(false);
 	};
@@ -154,12 +166,21 @@ function App() {
 					<h1 className="text-3xl font-bold text-gray-900">
 						Payy Merchant Demo
 					</h1>
-					<button
-						onClick={generateNewOrder}
-						className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-					>
-						Generate New Order
-					</button>
+					<div className="flex items-center gap-2">
+						<input
+							type="password"
+							className="px-4 py-2 w-96 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							onChange={(e) => {
+								setToken(e.target.value);
+							}}
+							/>
+						<button
+							onClick={generateNewOrder}
+							className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+							>
+							Generate New Order
+						</button>
+					</div>
 				</div>
 
 				{/* Order Details */}
@@ -198,7 +219,7 @@ function App() {
 								QR Code
 							</h3>
 							<div
-								// className="flex justify-center bg-white p-4 rounded-lg shadow-sm"
+								className="flex justify-center bg-white p-4 rounded-lg shadow-sm"
 								dangerouslySetInnerHTML={{ __html: qr }}
 							></div>
 						</div>
