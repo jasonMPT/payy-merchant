@@ -18,6 +18,8 @@ function App() {
 						Authorization:
 							"Bearer " + import.meta.env.VITE_PAYY_TOKEN,
 						"Content-Type": "application/json",
+						"Accept": "application/json",
+						"Access-Control-Allow-Origin": "*",
 					},
 					body: JSON.stringify({
 						merchant_reference: orderId,
@@ -60,6 +62,8 @@ function App() {
 				headers: {
 					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
 					"Content-Type": "application/json",
+					"Accept": "application/json",
+					"Access-Control-Allow-Origin": "*",
 				},
 				body: JSON.stringify({
 					order_id: orderId,
@@ -77,6 +81,8 @@ function App() {
 				headers: {
 					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
 					"Content-Type": "application/json",
+					"Accept": "application/json",
+					"Access-Control-Allow-Origin": "*",
 				},
 				body: JSON.stringify({
 					order_id: orderId,
@@ -101,6 +107,8 @@ function App() {
 				headers: {
 					Authorization: "Bearer " + import.meta.env.VITE_PAYY_TOKEN,
 					"Content-Type": "application/json",
+					"Accept": "application/json",
+					"Access-Control-Allow-Origin": "*",
 				},
 				body: JSON.stringify({
 					order: {
